@@ -20,6 +20,10 @@ class ToggleFavoriteUseCase @Inject constructor(
     suspend operator fun invoke(detail: MealDetail) {
         repository.toggleFavorite(detail)
     }
+
+    suspend operator fun invoke(summary: MealSummary) {
+        repository.toggleFavorite(summary)
+    }
 }
 
 class DeleteFavoriteUseCase @Inject constructor(

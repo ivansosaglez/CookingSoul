@@ -66,10 +66,11 @@ fun HomeScreen(
     onNavigateToCategory: (String) -> Unit,
     onNavigateToDetail: (String) -> Unit,
     onNavigateToFavorites: () -> Unit,
+    onNavigateToAllCategories: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val searchState by viewModel.searchState.collectAsStateWithLifecycle()
-    val categoriesState by viewModel.categoriesState.collectAsStateWithLifecycle()
+    val categoriesState by viewModel.homeCategoriesState.collectAsStateWithLifecycle()
     val randomMealState by viewModel.randomMealState.collectAsStateWithLifecycle()
     val recommendedState by viewModel.recommendedState.collectAsStateWithLifecycle()
     val query by viewModel.searchQuery.collectAsStateWithLifecycle()
@@ -85,7 +86,9 @@ fun HomeScreen(
         onClearRandomMealState = { viewModel.clearRandomMealState() },
         onNavigateToCategory = onNavigateToCategory,
         onNavigateToDetail = onNavigateToDetail,
-        onNavigateToFavorites = onNavigateToFavorites
+        onNavigateToFavorites = onNavigateToFavorites,
+        onNavigateToAllCategories = onNavigateToAllCategories,
+        onToggleFavorite = { viewModel.toggleFavorite(it) }
     )
 }
 
@@ -102,7 +105,9 @@ fun HomeScreenContent(
     onClearRandomMealState: () -> Unit,
     onNavigateToCategory: (String) -> Unit,
     onNavigateToDetail: (String) -> Unit,
-    onNavigateToFavorites: () -> Unit
+    onNavigateToFavorites: () -> Unit,
+    onNavigateToAllCategories: () -> Unit,
+    onToggleFavorite: (MealSummary) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -198,8 +203,8 @@ fun HomeScreenContent(
             Spacer(modifier = Modifier.height(24.dp))
 
             // Categories
-            SectionHeader(title = "Categories", actionText = "See all", onActionClick = {})
-            
+            SectionHeader(title = "Categories", actionText = "See all", onActionClick = onNavigateToAllCategories)
+
             if (categoriesState is UiState.Success) {
                 CategoriesRow(
                     categories = (categoriesState as UiState.Success).data,
@@ -224,6 +229,8 @@ fun HomeScreenContent(
                             RecipeGridCard(
                                 meal = meal, 
                                 onClick = { onNavigateToDetail(meal.id) },
+                                onFavoriteClick = { onToggleFavorite(meal) },
+                                isFavorite = meal.isFavorite,
                                 modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth() // Grid card style for results here? Mockup uses List style for results.
                             )
                         }
@@ -248,16 +255,28 @@ fun HomeScreenContent(
                                  modifier = Modifier.weight(1f),
                                  horizontalAlignment = Alignment.CenterHorizontally
                              ) {
-                                 meals.filterIndexed { i, _ -> i % 2 == 0 }.forEach {
-                                     RecipeGridCard(it, { onNavigateToDetail(it.id) }, modifier = Modifier.padding(bottom = 16.dp))
+                                 meals.filterIndexed { i, _ -> i % 2 == 0 }.forEach { meal ->
+                                     RecipeGridCard(
+                                         meal = meal,
+                                         onClick = { onNavigateToDetail(meal.id) },
+                                         onFavoriteClick = { onToggleFavorite(meal) },
+                                         isFavorite = meal.isFavorite,
+                                         modifier = Modifier.padding(bottom = 16.dp)
+                                     )
                                  }
                              }
                             Column(
                                 modifier = Modifier.weight(1f),
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                 meals.filterIndexed { i, _ -> i % 2 != 0 }.forEach {
-                                     RecipeGridCard(it, { onNavigateToDetail(it.id) }, modifier = Modifier.padding(bottom = 16.dp))
+                                 meals.filterIndexed { i, _ -> i % 2 != 0 }.forEach { meal ->
+                                     RecipeGridCard(
+                                         meal = meal,
+                                         onClick = { onNavigateToDetail(meal.id) },
+                                         onFavoriteClick = { onToggleFavorite(meal) },
+                                         isFavorite = meal.isFavorite,
+                                         modifier = Modifier.padding(bottom = 16.dp)
+                                     )
                                  }
                              }
                         }
@@ -294,6 +313,8 @@ fun HomeScreenPreview() {
         onClearRandomMealState = {},
         onNavigateToCategory = {},
         onNavigateToDetail = {},
-        onNavigateToFavorites = {}
+        onNavigateToFavorites = {},
+        onNavigateToAllCategories = {},
+        onToggleFavorite = {}
     )
 }

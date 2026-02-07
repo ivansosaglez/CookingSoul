@@ -42,8 +42,8 @@ import com.ivansosa.recetingapp.domain.model.MealSummary
 fun RecipeGridCard(
     meal: MealSummary,
     onClick: () -> Unit,
-    onFavoriteClick: (Boolean) -> Unit = {}, // Future feature
-    isFavorite: Boolean = false, // Future feature
+    onFavoriteClick: (Boolean) -> Unit,
+    isFavorite: Boolean,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -75,9 +75,9 @@ fun RecipeGridCard(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Filled.Favorite, // Using filled for design look even if not fav for now
+                        imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                         contentDescription = "Favorite",
-                        tint = if (isFavorite) Color.Red else Color.Gray.copy(alpha = 0.5f),
+                        tint = if (isFavorite) Color.Red else Color.Gray,
                         modifier = Modifier.size(16.dp)
                     )
                 }
@@ -138,6 +138,8 @@ fun RecipeGridCard(
 fun RecipeListCard(
     meal: MealSummary,
     onClick: () -> Unit,
+    onFavoriteClick: (Boolean) -> Unit,
+    isFavorite: Boolean,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -205,12 +207,14 @@ fun RecipeListCard(
                 }
             }
             
-             Icon(
-                imageVector = Icons.Default.FavoriteBorder,
-                contentDescription = "Favorite",
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(16.dp)
-            )
+             IconButton(onClick = { onFavoriteClick(!isFavorite) }) {
+                 Icon(
+                     imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                     contentDescription = "Favorite",
+                     tint = if (isFavorite) Color.Red else MaterialTheme.colorScheme.onSurfaceVariant,
+                     modifier = Modifier.size(16.dp)
+                 )
+             }
         }
     }
 }
@@ -223,7 +227,7 @@ fun MealCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    RecipeListCard(meal, onClick, modifier)
+    RecipeListCard(meal, onClick, {}, false, modifier)
 }
 
 // Deprecated or Replaced MealsList
@@ -238,6 +242,8 @@ fun MealsList(
             RecipeListCard(
                 meal = meals[index],
                 onClick = { onMealClick(meals[index].id) },
+                onFavoriteClick = {}, // Not implemented in this deprecated list yet
+                isFavorite = meals[index].isFavorite,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
         }
@@ -253,10 +259,18 @@ fun RecipeGridCardPreview() {
         thumbUrl = "https://www.themealdb.com/images/media/meals/llcbn01574260722.jpg"
     )
     
-    Box(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier.padding(16.dp)) {
         RecipeGridCard(
             meal = mockMeal,
             onClick = {},
+            onFavoriteClick = {},
+            isFavorite = true,
+            modifier = Modifier.padding(8.dp)
+        )
+        RecipeListCard(
+            meal = mockMeal,
+            onClick = {},
+            onFavoriteClick = {},
             isFavorite = true,
             modifier = Modifier.padding(8.dp)
         )

@@ -3,7 +3,8 @@ package com.ivansosa.recetingapp.domain.model
 data class MealSummary(
     val id: String,
     val name: String,
-    val thumbUrl: String?
+    val thumbUrl: String?,
+    val isFavorite: Boolean = false
 )
 
 data class MealDetail(

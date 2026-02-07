@@ -3,7 +3,7 @@ package com.ivansosa.recetingapp.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivansosa.recetingapp.domain.model.MealSummary
-import com.ivansosa.recetingapp.domain.usecase.DeleteFavoriteUseCase
+import com.ivansosa.recetingapp.domain.usecase.ToggleFavoriteUseCase
 import com.ivansosa.recetingapp.domain.usecase.ObserveFavoritesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FavoritesViewModel @Inject constructor(
     observeFavoritesUseCase: ObserveFavoritesUseCase,
-    private val deleteFavoriteUseCase: DeleteFavoriteUseCase
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase
 ) : ViewModel() {
 
     val uiState: StateFlow<UiState<List<MealSummary>>> = observeFavoritesUseCase()
@@ -29,9 +29,9 @@ class FavoritesViewModel @Inject constructor(
             initialValue = UiState.Loading
         )
 
-    fun deleteFavorite(id: String) {
+    fun toggleFavorite(meal: MealSummary) {
         viewModelScope.launch {
-            deleteFavoriteUseCase(id)
+            toggleFavoriteUseCase(meal)
         }
     }
 }

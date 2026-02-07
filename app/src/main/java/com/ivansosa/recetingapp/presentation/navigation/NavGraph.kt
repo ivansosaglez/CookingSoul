@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.ivansosa.recetingapp.presentation.screens.CategoriesScreen
 import com.ivansosa.recetingapp.presentation.screens.CategoryMealsScreen
 import com.ivansosa.recetingapp.presentation.screens.FavoritesScreen
 import com.ivansosa.recetingapp.presentation.screens.HomeScreen
@@ -29,6 +30,18 @@ fun NavGraph() {
                 },
                 onNavigateToFavorites = {
                     navController.navigate(Screen.Favorites.route)
+                },
+                onNavigateToAllCategories = {
+                    navController.navigate(Screen.CategoriesList.route)
+                }
+            )
+        }
+
+        composable(route = Screen.CategoriesList.route) {
+            CategoriesScreen(
+                onNavigateUp = { navController.navigateUp() },
+                onCategoryClick = { categoryName ->
+                     navController.navigate(Screen.CategoryMeals.createRoute(categoryName))
                 }
             )
         }

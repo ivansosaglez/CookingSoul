@@ -25,7 +25,11 @@ class MealsRepositoryImpl @Inject constructor(
 
     override suspend fun searchMeals(query: String): List<MealSummary> = withContext(dispatcher) {
         val response = api.searchMeals(query)
-        response.meals?.map { it.toSummary() } ?: emptyList()
+        val meals = response.meals?.map { it.toSummary() } ?: emptyList()
+        if (meals.isEmpty()) return@withContext emptyList()
+
+        val favoriteIds = favoriteDao.observeFavorites().first().map { it.id }.toSet()
+        meals.map { it.copy(isFavorite = favoriteIds.contains(it.id)) }
     }
 
     override suspend fun getCategories(): List<MealCategory> = withContext(dispatcher) {
@@ -34,7 +38,11 @@ class MealsRepositoryImpl @Inject constructor(
 
     override suspend fun getMealsByCategory(category: String): List<MealSummary> = withContext(dispatcher) {
         val response = api.filterByCategory(category)
-        response.meals?.map { it.toSummary() } ?: emptyList()
+        val meals = response.meals?.map { it.toSummary() } ?: emptyList()
+        if (meals.isEmpty()) return@withContext emptyList()
+
+        val favoriteIds = favoriteDao.observeFavorites().first().map { it.id }.toSet()
+        meals.map { it.copy(isFavorite = favoriteIds.contains(it.id)) }
     }
 
     override suspend fun getMealDetail(id: String): MealDetail = withContext(dispatcher) {
@@ -86,6 +94,20 @@ class MealsRepositoryImpl @Inject constructor(
                 id = detail.id,
                 name = detail.name,
                 thumbUrl = detail.thumbUrl
+            )
+            favoriteDao.upsertFavorite(entity)
+        }
+    }
+
+    override suspend fun toggleFavorite(summary: MealSummary) = withContext(dispatcher) {
+        val isFav = favoriteDao.observeIsFavorite(summary.id).first()
+        if (isFav) {
+            favoriteDao.deleteFavoriteById(summary.id)
+        } else {
+            val entity = FavoriteMealEntity(
+                id = summary.id,
+                name = summary.name,
+                thumbUrl = summary.thumbUrl
             )
             favoriteDao.upsertFavorite(entity)
         }

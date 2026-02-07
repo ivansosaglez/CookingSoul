@@ -128,8 +128,8 @@ fun FavoritesScreen(
                                 RecipeGridCard(
                                     meal = meal,
                                     onClick = { onNavigateToDetail(meal.id) },
-                                    isFavorite = true, // It's favorites screen
-                                    onFavoriteClick = { /* Logic to remove? Or just visuals */ },
+                                    isFavorite = true,
+                                    onFavoriteClick = { viewModel.toggleFavorite(meal) },
                                     modifier = Modifier.fillMaxWidth()
                                 )
                             }
