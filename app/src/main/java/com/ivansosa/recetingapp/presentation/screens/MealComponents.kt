@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.ivansosa.recetingapp.domain.model.MealSummary
+import com.ivansosa.recetingapp.ui.theme.RecetingAppTheme
 
 @Composable
 fun RecipeGridCard(
@@ -258,21 +259,23 @@ fun RecipeGridCardPreview() {
         name = "Spaghetti Carbonara",
         thumbUrl = "https://www.themealdb.com/images/media/meals/llcbn01574260722.jpg"
     )
-    
-    Column(modifier = Modifier.padding(16.dp)) {
-        RecipeGridCard(
-            meal = mockMeal,
-            onClick = {},
-            onFavoriteClick = {},
-            isFavorite = true,
-            modifier = Modifier.padding(8.dp)
-        )
-        RecipeListCard(
-            meal = mockMeal,
-            onClick = {},
-            onFavoriteClick = {},
-            isFavorite = true,
-            modifier = Modifier.padding(8.dp)
-        )
+
+    RecetingAppTheme {
+        Column(modifier = Modifier.padding(16.dp)) {
+            RecipeGridCard(
+                meal = mockMeal,
+                onClick = {},
+                onFavoriteClick = {},
+                isFavorite = true,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            RecipeListCard(
+                meal = mockMeal,
+                onClick = {},
+                onFavoriteClick = {},
+                isFavorite = true,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+        }
     }
 }

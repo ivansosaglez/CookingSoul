@@ -168,121 +168,133 @@ fun HomeScreenContent(
             
             Spacer(modifier = Modifier.height(24.dp))
             
-            // Surprise Me Button
-            Button(
-                onClick = onGenerateRandomMeal,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                ),
-                shape = RoundedCornerShape(16.dp)
-            ) {
-                // Should use Icon here if available, text for now
-                Text(
-                    text = "Random Recipe 🎲",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-            
-            // Show Random Meal if available (temporary UX for "Surprise Me")
-            if (randomMealState is UiState.Success) {
-                // Rely on smart cast and explicit type to avoid erasure
-                val meal = (randomMealState as UiState.Success<*>).data as MealDetail
-                
-                // Navigate and then reset state so we don't return here on back press
-                // This is a side-effect, should ideally be in LaunchedEffect but this works for now if safe
-                androidx.compose.runtime.LaunchedEffect(meal) {
-                    onNavigateToDetail(meal.id)
-                    onClearRandomMealState()
-                }
-            }
-            
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Categories
-            SectionHeader(title = "Categories", actionText = "See all", onActionClick = onNavigateToAllCategories)
-
-            if (categoriesState is UiState.Success) {
-                CategoriesRow(
-                    categories = (categoriesState as UiState.Success).data,
-                    onCategoryClick = onNavigateToCategory
-                )
-            } else if (categoriesState is UiState.Loading) {
-                LoadingView(Modifier.height(100.dp))
-            }
-            
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Recommended (or Search Results if searching)
-            if (query.isNotEmpty()) {
-                SectionHeader(title = "Search Results", actionText = "See all", onActionClick = {})
-                 when (searchState) {
-                    is UiState.Success -> {
-                        val meals = (searchState as UiState.Success).data
-                        // Using a simple column for scrollable content inside the scrollable column is problematic
-                        // Ideally we use LazyColumn for the whole screen or switch layout.
-                        // For MVP visual:
-                        meals.take(5).forEach { meal ->
-                            RecipeGridCard(
-                                meal = meal, 
-                                onClick = { onNavigateToDetail(meal.id) },
-                                onFavoriteClick = { onToggleFavorite(meal) },
-                                isFavorite = meal.isFavorite,
-                                modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth() // Grid card style for results here? Mockup uses List style for results.
+            androidx.compose.animation.Crossfade(targetState = query.isEmpty(), label = "SearchTransition") { isQueryEmpty ->
+                Column {
+                    if (isQueryEmpty) {
+                        // Surprise Me Button
+                        Button(
+                            onClick = onGenerateRandomMeal,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(56.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.secondary
+                            ),
+                            shape = RoundedCornerShape(16.dp)
+                        ) {
+                            // Should use Icon here if available, text for now
+                            Text(
+                                text = "Random Recipe 🎲",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSecondary
                             )
                         }
-                    }
-                    is UiState.Loading -> LoadingView()
-                    else -> {}
-                }
-            } else {
-                SectionHeader(title = "Recommended", actionText = "See all", onActionClick = {})
-                // Mocking recommended using Search Results or just static
-                // Since we don't have "Recommended" API, use a default search like "Beef" or empty search state if holds something
-                // For now, let's assume `searchState` holds some initial "Recommended" items if query is empty (HomeViewModel init)
-                if (recommendedState is UiState.Success) {
-                    val meals = (recommendedState as UiState.Success).data
-                    // Staggered grid mock using Row of Columns
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        // Implementing a rudimentary grid manually inside Column scroll
-                        if (meals.isNotEmpty()) {
-                             Column(
-                                 modifier = Modifier.weight(1f),
-                                 horizontalAlignment = Alignment.CenterHorizontally
-                             ) {
-                                 meals.filterIndexed { i, _ -> i % 2 == 0 }.forEach { meal ->
-                                     RecipeGridCard(
-                                         meal = meal,
-                                         onClick = { onNavigateToDetail(meal.id) },
-                                         onFavoriteClick = { onToggleFavorite(meal) },
-                                         isFavorite = meal.isFavorite,
-                                         modifier = Modifier.padding(bottom = 16.dp)
-                                     )
-                                 }
-                             }
-                            Column(
-                                modifier = Modifier.weight(1f),
-                                horizontalAlignment = Alignment.CenterHorizontally
+
+                        // Show Random Meal if available (temporary UX for "Surprise Me")
+                        if (randomMealState is UiState.Success) {
+                            // Rely on smart cast and explicit type to avoid erasure
+                            val meal = (randomMealState as UiState.Success<*>).data as MealDetail
+
+                            // Navigate and then reset state so we don't return here on back press
+                            // This is a side-effect, should ideally be in LaunchedEffect but this works for now if safe
+                            androidx.compose.runtime.LaunchedEffect(meal) {
+                                onNavigateToDetail(meal.id)
+                                onClearRandomMealState()
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        // Categories
+                        SectionHeader(
+                            title = "Categories",
+                            actionText = "See all",
+                            onActionClick = onNavigateToAllCategories
+                        )
+
+                        if (categoriesState is UiState.Success) {
+                            CategoriesRow(
+                                categories = (categoriesState as UiState.Success).data,
+                                onCategoryClick = onNavigateToCategory
+                            )
+                        } else if (categoriesState is UiState.Loading) {
+                            LoadingView(Modifier.height(100.dp))
+                        }
+
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        SectionHeader(title = "Recommended", actionText = "See all", onActionClick = {})
+                        // Mocking recommended using Search Results or just static
+                        // Since we don't have "Recommended" API, use a default search like "Beef" or empty search state if holds something
+                        // For now, let's assume `searchState` holds some initial "Recommended" items if query is empty (HomeViewModel init)
+                        if (recommendedState is UiState.Success) {
+                            val meals = (recommendedState as UiState.Success).data
+                            // Staggered grid mock using Row of Columns
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
                             ) {
-                                 meals.filterIndexed { i, _ -> i % 2 != 0 }.forEach { meal ->
-                                     RecipeGridCard(
-                                         meal = meal,
-                                         onClick = { onNavigateToDetail(meal.id) },
-                                         onFavoriteClick = { onToggleFavorite(meal) },
-                                         isFavorite = meal.isFavorite,
-                                         modifier = Modifier.padding(bottom = 16.dp)
-                                     )
-                                 }
-                             }
+                                // Implementing a rudimentary grid manually inside Column scroll
+                                if (meals.isNotEmpty()) {
+                                    Column(
+                                        modifier = Modifier.weight(1f),
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        meals.filterIndexed { i, _ -> i % 2 == 0 }.forEach { meal ->
+                                            RecipeGridCard(
+                                                meal = meal,
+                                                onClick = { onNavigateToDetail(meal.id) },
+                                                onFavoriteClick = { onToggleFavorite(meal) },
+                                                isFavorite = meal.isFavorite,
+                                                modifier = Modifier.padding(bottom = 16.dp)
+                                            )
+                                        }
+                                    }
+                                    Column(
+                                        modifier = Modifier.weight(1f),
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        meals.filterIndexed { i, _ -> i % 2 != 0 }.forEach { meal ->
+                                            RecipeGridCard(
+                                                meal = meal,
+                                                onClick = { onNavigateToDetail(meal.id) },
+                                                onFavoriteClick = { onToggleFavorite(meal) },
+                                                isFavorite = meal.isFavorite,
+                                                modifier = Modifier.padding(bottom = 16.dp)
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        } else if (recommendedState is UiState.Loading) {
+                            LoadingView(Modifier.height(200.dp))
+                        }
+                    } else {
+                        // Search Results
+                        SectionHeader(title = "Search Results", actionText = "See all", onActionClick = {})
+                        when (searchState) {
+                            is UiState.Success -> {
+                                val meals = (searchState as UiState.Success).data
+                                // Using a simple column for scrollable content inside the scrollable column is problematic
+                                // Ideally we use LazyColumn for the whole screen or switch layout.
+                                // For MVP visual:
+                                meals.take(5).forEach { meal ->
+                                    RecipeGridCard(
+                                        meal = meal,
+                                        onClick = { onNavigateToDetail(meal.id) },
+                                        onFavoriteClick = { onToggleFavorite(meal) },
+                                        isFavorite = meal.isFavorite,
+                                        modifier = Modifier
+                                            .padding(bottom = 16.dp)
+                                            .fillMaxWidth() // Grid card style for results here? Mockup uses List style for results.
+                                    )
+                                }
+                            }
+
+                            is UiState.Loading -> LoadingView()
+                            else -> {}
                         }
                     }
-                } else if (recommendedState is UiState.Loading) {
-                    LoadingView(Modifier.height(200.dp))
                 }
             }
         }
@@ -302,19 +314,21 @@ fun HomeScreenPreview() {
         MealSummary("3", "Pancakes", "https://www.themealdb.com/images/media/meals/rwuyqx1511383174.jpg")
     )
 
-    HomeScreenContent(
-        searchState = UiState.Empty,
-        categoriesState = UiState.Success(mockCategories),
-        randomMealState = UiState.Empty,
-        recommendedState = UiState.Success(mockMeals),
-        query = "",
-        onQueryChange = {},
-        onGenerateRandomMeal = {},
-        onClearRandomMealState = {},
-        onNavigateToCategory = {},
-        onNavigateToDetail = {},
-        onNavigateToFavorites = {},
-        onNavigateToAllCategories = {},
-        onToggleFavorite = {}
-    )
+    com.ivansosa.recetingapp.ui.theme.RecetingAppTheme {
+        HomeScreenContent(
+            searchState = UiState.Empty,
+            categoriesState = UiState.Success(mockCategories),
+            randomMealState = UiState.Empty,
+            recommendedState = UiState.Success(mockMeals),
+            query = "",
+            onQueryChange = {},
+            onGenerateRandomMeal = {},
+            onClearRandomMealState = {},
+            onNavigateToCategory = {},
+            onNavigateToDetail = {},
+            onNavigateToFavorites = {},
+            onNavigateToAllCategories = {},
+            onToggleFavorite = {}
+        )
+    }
 }

@@ -79,7 +79,7 @@ fun CustomSearchBar(
             Icon(
                 imageVector = Icons.Default.Settings,
                 contentDescription = "Filter",
-                tint = MaterialTheme.colorScheme.primary // Green filter icon
+                tint = MaterialTheme.colorScheme.secondary // Green filter icon
             )
         }
     }
