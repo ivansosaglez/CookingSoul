@@ -4,7 +4,10 @@ data class MealSummary(
     val id: String,
     val name: String,
     val thumbUrl: String?,
-    val isFavorite: Boolean = false
+    val isFavorite: Boolean = false,
+    val tags: String? = null,
+    val category: String? = null,
+    val area: String? = null
 )
 
 data class MealDetail(
@@ -15,7 +18,8 @@ data class MealDetail(
     val area: String,
     val instructions: String,
     val ingredients: List<IngredientMeasure>,
-    val isFavorite: Boolean = false
+    val isFavorite: Boolean = false,
+    val tags: String? = null
 )
 
 data class IngredientMeasure(

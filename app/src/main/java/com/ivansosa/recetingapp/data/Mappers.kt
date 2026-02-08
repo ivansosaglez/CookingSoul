@@ -47,7 +47,8 @@ fun MealDto.toDomain(): MealDetail {
         area = strArea ?: "Unknown",
         instructions = strInstructions ?: "",
         ingredients = ingredientsList,
-        isFavorite = false
+        isFavorite = false,
+        tags = strTags
     )
 }
 
@@ -55,7 +56,10 @@ fun MealDto.toSummary(): MealSummary {
     return MealSummary(
         id = idMeal,
         name = strMeal,
-        thumbUrl = strMealThumb
+        thumbUrl = strMealThumb,
+        tags = strTags,
+        category = strCategory,
+        area = strArea
     )
 }
 

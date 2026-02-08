@@ -1,5 +1,6 @@
 package com.ivansosa.recetingapp.presentation.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -82,7 +83,7 @@ fun RecipeGridCard(
                         modifier = Modifier.size(16.dp)
                     )
                 }
-                
+
                 // Time Badge Overlay (Mock data for now)
                 Box(
                     modifier = Modifier
@@ -107,15 +108,24 @@ fun RecipeGridCard(
                     }
                 }
             }
-            
+
             Column(modifier = Modifier.padding(12.dp)) {
-                Text(
-                    text = "Breakfast", // Mock Category or Area
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.height(4.dp))
+                val infoText = listOfNotNull(
+                    meal.category.takeIf { it != "Unknown" },
+                    meal.area.takeIf { it != "Unknown" }
+                ).joinToString(" | ")
+
+                if (infoText.isNotEmpty()) {
+                    Text(
+                        text = infoText,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                }
                 Text(
                     text = meal.name,
                     style = MaterialTheme.typography.titleMedium,
@@ -126,7 +136,7 @@ fun RecipeGridCard(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Easy", // Mock difficulty
+                    text = meal.tags?.split(",")?.firstOrNull() ?: "",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -164,9 +174,11 @@ fun RecipeListCard(
                     .clip(RoundedCornerShape(12.dp)),
                 contentScale = ContentScale.Crop
             )
-            
-            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp).weight(1f)) {
-                 Text(
+
+            Column(modifier = Modifier
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .weight(1f)) {
+                Text(
                     text = meal.name,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
@@ -175,47 +187,67 @@ fun RecipeListCard(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "High Protein • Gluten Free", // Mock tags
+                    text = meal.tags?.replace(",", " • ") ?: "Delicious",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                 Spacer(modifier = Modifier.height(8.dp))
-                 
+                Spacer(modifier = Modifier.height(8.dp))
+
                 Row {
-                    Box(
-                        modifier = Modifier
-                            .background(MaterialTheme.colorScheme.secondaryContainer, RoundedCornerShape(4.dp))
-                            .padding(horizontal = 6.dp, vertical = 2.dp)
-                    ) {
-                        Text(
-                           text = "Italian", // Mock
-                           style = MaterialTheme.typography.labelSmall,
-                           color = MaterialTheme.colorScheme.onSecondaryContainer
-                        )
-                    }
-                     Spacer(modifier = Modifier.width(8.dp))
-                     Box(
-                        modifier = Modifier
-                            .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(4.dp))
-                            .padding(horizontal = 6.dp, vertical = 2.dp)
-                    ) {
-                        Text(
-                           text = "Chicken", // Mock
-                           style = MaterialTheme.typography.labelSmall,
-                           color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+                    Box {
+                        Row(
+                            Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            // Only show category if available and not Unknown
+                            if (!meal.category.isNullOrEmpty() && meal.category != "Unknown") {
+                                Box(
+                                    modifier = Modifier
+                                        .background(
+                                            MaterialTheme.colorScheme.secondaryContainer,
+                                            RoundedCornerShape(4.dp)
+                                        )
+                                        .padding(horizontal = 6.dp, vertical = 2.dp)
+                                ) {
+                                    Text(
+                                        text = meal.category,
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                                    )
+                                }
+                                Spacer(modifier = Modifier.width(8.dp))
+                            }
+
+                            // Only show area if available and not Unknown
+                            if (!meal.area.isNullOrEmpty() && meal.area != "Unknown") {
+                                Box(
+                                    modifier = Modifier
+                                        .background(
+                                            MaterialTheme.colorScheme.surfaceVariant,
+                                            RoundedCornerShape(4.dp)
+                                        )
+                                        .padding(horizontal = 6.dp, vertical = 2.dp)
+                                ) {
+                                    Text(
+                                        text = meal.area,
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
-            
-             IconButton(onClick = { onFavoriteClick(!isFavorite) }) {
-                 Icon(
-                     imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                     contentDescription = "Favorite",
-                     tint = if (isFavorite) Color.Red else MaterialTheme.colorScheme.onSurfaceVariant,
-                     modifier = Modifier.size(16.dp)
-                 )
-             }
+
+            IconButton(onClick = { onFavoriteClick(!isFavorite) }) {
+                Icon(
+                    imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                    contentDescription = "Favorite",
+                    tint = if (isFavorite) Color.Red else MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(16.dp)
+                )
+            }
         }
     }
 }
@@ -257,7 +289,11 @@ fun RecipeGridCardPreview() {
     val mockMeal = MealSummary(
         id = "1",
         name = "Spaghetti Carbonara",
-        thumbUrl = "https://www.themealdb.com/images/media/meals/llcbn01574260722.jpg"
+        thumbUrl = "https://www.themealdb.com/images/media/meals/llcbn01574260722.jpg",
+        category = "Pasta",
+        area = "Italian",
+        tags = "Pasta, Carbonara",
+        isFavorite = false
     )
 
     RecetingAppTheme {

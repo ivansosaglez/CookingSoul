@@ -11,6 +11,8 @@ import com.ivansosa.recetingapp.domain.model.MealDetail
 import com.ivansosa.recetingapp.domain.model.MealSummary
 import com.ivansosa.recetingapp.domain.repository.MealsRepository
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -38,11 +40,24 @@ class MealsRepositoryImpl @Inject constructor(
 
     override suspend fun getMealsByCategory(category: String): List<MealSummary> = withContext(dispatcher) {
         val response = api.filterByCategory(category)
-        val meals = response.meals?.map { it.toSummary() } ?: emptyList()
-        if (meals.isEmpty()) return@withContext emptyList()
+        val shortMeals = response.meals ?: emptyList()
+        if (shortMeals.isEmpty()) return@withContext emptyList()
+
+        // Fetch full details for each meal to get Area and Tags
+        // limit to 20 to avoid rate limiting
+        val fullMeals = shortMeals.take(20).map { shortMeal ->
+             async {
+                 try {
+                     val detailResponse = api.lookupMeal(shortMeal.idMeal)
+                     detailResponse.meals?.firstOrNull()?.toSummary()
+                 } catch (e: Exception) {
+                     shortMeal.toSummary() // Fallback to short summary
+                 }
+             }
+        }.awaitAll().filterNotNull()
 
         val favoriteIds = favoriteDao.observeFavorites().first().map { it.id }.toSet()
-        meals.map { it.copy(isFavorite = favoriteIds.contains(it.id)) }
+        fullMeals.map { it.copy(isFavorite = favoriteIds.contains(it.id)) }
     }
 
     override suspend fun getMealDetail(id: String): MealDetail = withContext(dispatcher) {
@@ -75,7 +90,11 @@ class MealsRepositoryImpl @Inject constructor(
                 MealSummary(
                     id = entity.id,
                     name = entity.name,
-                    thumbUrl = entity.thumbUrl
+                    thumbUrl = entity.thumbUrl,
+                    isFavorite = true,
+                    tags = entity.tags,
+                    category = entity.category,
+                    area = entity.area
                 )
             }
         }
@@ -93,7 +112,10 @@ class MealsRepositoryImpl @Inject constructor(
             val entity = FavoriteMealEntity(
                 id = detail.id,
                 name = detail.name,
-                thumbUrl = detail.thumbUrl
+                thumbUrl = detail.thumbUrl,
+                tags = detail.tags,
+                category = detail.category,
+                area = detail.area
             )
             favoriteDao.upsertFavorite(entity)
         }
@@ -107,7 +129,10 @@ class MealsRepositoryImpl @Inject constructor(
             val entity = FavoriteMealEntity(
                 id = summary.id,
                 name = summary.name,
-                thumbUrl = summary.thumbUrl
+                thumbUrl = summary.thumbUrl,
+                tags = summary.tags,
+                category = summary.category,
+                area = summary.area
             )
             favoriteDao.upsertFavorite(entity)
         }
