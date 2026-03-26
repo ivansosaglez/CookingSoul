@@ -52,9 +52,9 @@ import com.ivansosa.recetingapp.R
 import com.ivansosa.recetingapp.domain.model.MealCategory
 import com.ivansosa.recetingapp.domain.model.MealSummary
 import com.ivansosa.recetingapp.domain.model.MealDetail
+import com.ivansosa.recetingapp.presentation.components.AdBannerView
 import com.ivansosa.recetingapp.presentation.components.BottomNavigationBar
 import com.ivansosa.recetingapp.presentation.components.CustomSearchBar
-
 import com.ivansosa.recetingapp.presentation.components.SectionHeader
 import com.ivansosa.recetingapp.presentation.navigation.Screen
 import com.ivansosa.recetingapp.presentation.viewmodel.HomeViewModel
@@ -145,8 +145,10 @@ fun HomeScreenContent(
             BottomNavigationBar(
                 currentRoute = Screen.Home.route,
                 onNavigate = { route ->
-                    if (route == Screen.Favorites.route) onNavigateToFavorites()
-                    // else stay
+                    when (route) {
+                        Screen.Favorites.route -> onNavigateToFavorites()
+                        Screen.CategoriesList.route -> onNavigateToAllCategories()
+                    }
                 }
             )
         }
@@ -159,14 +161,19 @@ fun HomeScreenContent(
                 .padding(horizontal = 16.dp)
         ) {
             Spacer(modifier = Modifier.height(16.dp))
-            
+
             // Search Bar
             CustomSearchBar(
                 query = query,
                 onQueryChange = onQueryChange
             )
-            
-            Spacer(modifier = Modifier.height(24.dp))
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Ad Banner
+            AdBannerView()
+
+            Spacer(modifier = Modifier.height(12.dp))
             
             androidx.compose.animation.Crossfade(targetState = query.isEmpty(), label = "SearchTransition") { isQueryEmpty ->
                 Column {
@@ -206,25 +213,7 @@ fun HomeScreenContent(
 
                         Spacer(modifier = Modifier.height(24.dp))
 
-                        // Categories
-                        SectionHeader(
-                            title = "Categories",
-                            actionText = "See all",
-                            onActionClick = onNavigateToAllCategories
-                        )
-
-                        if (categoriesState is UiState.Success) {
-                            CategoriesRow(
-                                categories = (categoriesState as UiState.Success).data,
-                                onCategoryClick = onNavigateToCategory
-                            )
-                        } else if (categoriesState is UiState.Loading) {
-                            LoadingView(Modifier.height(100.dp))
-                        }
-
-                        Spacer(modifier = Modifier.height(24.dp))
-
-                        SectionHeader(title = "Recommended", actionText = "See all", onActionClick = {})
+                        SectionHeader(title = "Recommended")
                         // Mocking recommended using Search Results or just static
                         // Since we don't have "Recommended" API, use a default search like "Beef" or empty search state if holds something
                         // For now, let's assume `searchState` holds some initial "Recommended" items if query is empty (HomeViewModel init)
@@ -271,7 +260,7 @@ fun HomeScreenContent(
                         }
                     } else {
                         // Search Results
-                        SectionHeader(title = "Search Results", actionText = "See all", onActionClick = {})
+                        SectionHeader(title = "Search Results")
                         when (searchState) {
                             is UiState.Success -> {
                                 val meals = (searchState as UiState.Success).data

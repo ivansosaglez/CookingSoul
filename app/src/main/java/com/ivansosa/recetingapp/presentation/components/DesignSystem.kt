@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -34,19 +34,17 @@ import androidx.compose.material3.IconButton
 fun CustomSearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
-    onFilterClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val focusRequester = remember { FocusRequester() }
-    val focusManager = LocalFocusManager.current
 
     Row(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant) // Light gray bg
+            .background(MaterialTheme.colorScheme.surfaceVariant)
             .clickable { focusRequester.requestFocus() }
-            .padding(start = 16.dp, end = 8.dp, top = 8.dp, bottom = 8.dp), // Adjusted padding for IconButton
+            .padding(start = 16.dp, end = 8.dp, top = 8.dp, bottom = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -74,13 +72,14 @@ fun CustomSearchBar(
                 singleLine = true
             )
         }
-        Spacer(modifier = Modifier.width(4.dp))
-        IconButton(onClick = onFilterClick) {
-            Icon(
-                imageVector = Icons.Default.Settings,
-                contentDescription = "Filter",
-                tint = MaterialTheme.colorScheme.secondary // Green filter icon
-            )
+        if (query.isNotEmpty()) {
+            IconButton(onClick = { onQueryChange("") }) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "Clear",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
     }
 }

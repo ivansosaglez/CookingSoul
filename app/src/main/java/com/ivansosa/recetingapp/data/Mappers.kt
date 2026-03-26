@@ -48,7 +48,8 @@ fun MealDto.toDomain(): MealDetail {
         instructions = strInstructions ?: "",
         ingredients = ingredientsList,
         isFavorite = false,
-        tags = strTags
+        tags = strTags,
+        youtubeUrl = strYoutube
     )
 }
 

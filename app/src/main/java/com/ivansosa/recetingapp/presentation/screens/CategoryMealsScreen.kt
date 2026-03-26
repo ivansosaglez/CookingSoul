@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ivansosa.recetingapp.presentation.components.AdBannerView
 import com.ivansosa.recetingapp.presentation.components.CustomSearchBar
 import com.ivansosa.recetingapp.presentation.components.PrimaryFilterChip
 
@@ -79,7 +80,11 @@ fun CategoryMealsScreen(
                 onQueryChange = {},
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
-            
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            AdBannerView()
+
             Spacer(modifier = Modifier.height(16.dp))
             
             // Filter Chips Row

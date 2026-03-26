@@ -3,13 +3,11 @@ package com.ivansosa.recetingapp.presentation.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -21,7 +19,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -31,9 +28,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ivansosa.recetingapp.presentation.components.AdBannerView
 import com.ivansosa.recetingapp.presentation.components.BottomNavigationBar
-import com.ivansosa.recetingapp.presentation.components.PrimaryFilterChip
-
 import com.ivansosa.recetingapp.presentation.navigation.Screen
 import com.ivansosa.recetingapp.presentation.viewmodel.FavoritesViewModel
 import com.ivansosa.recetingapp.presentation.viewmodel.UiState
@@ -43,6 +39,7 @@ import com.ivansosa.recetingapp.presentation.viewmodel.UiState
 fun FavoritesScreen(
     onNavigateUp: () -> Unit,
     onNavigateToDetail: (String) -> Unit,
+    onNavigateToCategories: () -> Unit = {},
     viewModel: FavoritesViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -58,11 +55,7 @@ fun FavoritesScreen(
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },
-                actions = {
-                    TextButton(onClick = { /* Edit mode */ }) {
-                        Text("Edit", color = MaterialTheme.colorScheme.primary)
-                    }
-                },
+
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
             )
         },
@@ -70,9 +63,10 @@ fun FavoritesScreen(
             BottomNavigationBar(
                 currentRoute = Screen.Favorites.route,
                 onNavigate = { route ->
-                    if (route == Screen.Home.route) onNavigateUp() // Or separate nav action
-                    // Simple back/nav logic for now. 
-                    // Ideally we inject standard navController actions.
+                    when (route) {
+                        Screen.Home.route -> onNavigateUp()
+                        Screen.CategoriesList.route -> onNavigateToCategories()
+                    }
                 }
             )
         }
@@ -97,17 +91,10 @@ fun FavoritesScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            // Chips row (Mock categories for favorites)
-            Row(modifier = Modifier.fillMaxWidth()) {
-                PrimaryFilterChip("All Meals", true, {})
-                Spacer(modifier = Modifier.width(8.dp))
-                PrimaryFilterChip("Breakfast", false, {})
-                Spacer(modifier = Modifier.width(8.dp))
-                PrimaryFilterChip("Chicken", false, {})
-            }
-            
+            Spacer(modifier = Modifier.height(8.dp))
+
+            AdBannerView()
+
             Spacer(modifier = Modifier.height(16.dp))
             
             when (val state = uiState) {

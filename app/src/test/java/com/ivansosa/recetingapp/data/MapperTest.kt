@@ -15,6 +15,8 @@ class MapperTest {
             strCategory = "Beef",
             strArea = "British",
             strInstructions = "Cook it.",
+            strTags = null,
+            strYoutube = null,
             strIngredient1 = "Beef", strMeasure1 = "1kg",
             strIngredient2 = "Salt", strMeasure2 = "1 tsp",
             strIngredient3 = "", strMeasure3 = "", // Empty

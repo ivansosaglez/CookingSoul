@@ -19,7 +19,8 @@ data class MealDetail(
     val instructions: String,
     val ingredients: List<IngredientMeasure>,
     val isFavorite: Boolean = false,
-    val tags: String? = null
+    val tags: String? = null,
+    val youtubeUrl: String? = null
 )
 
 data class IngredientMeasure(

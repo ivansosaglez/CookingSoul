@@ -3,10 +3,10 @@ package com.ivansosa.recetingapp.presentation.components
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.List
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -26,7 +26,7 @@ sealed class BottomNavItem(
 ) {
     object Home : BottomNavItem(Screen.Home.route, "Home", Icons.Filled.Home, Icons.Outlined.Home)
     object Favorites : BottomNavItem(Screen.Favorites.route, "Favorites", Icons.Filled.Favorite, Icons.Outlined.FavoriteBorder)
-    object Profile : BottomNavItem("profile", "Profile", Icons.Filled.Person, Icons.Outlined.Person) // Placeholder route
+    object Categories : BottomNavItem(Screen.CategoriesList.route, "Categories", Icons.Filled.List, Icons.Outlined.List)
 }
 
 @Composable
@@ -37,7 +37,7 @@ fun BottomNavigationBar(
     val items = listOf(
         BottomNavItem.Home,
         BottomNavItem.Favorites,
-        BottomNavItem.Profile
+        BottomNavItem.Categories
     )
 
     NavigationBar(

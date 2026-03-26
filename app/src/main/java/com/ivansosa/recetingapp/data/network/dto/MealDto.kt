@@ -12,7 +12,8 @@ data class MealDto(
     @Json(name = "strArea") val strArea: String?,
     @Json(name = "strInstructions") val strInstructions: String?,
     @Json(name = "strTags") val strTags: String?,
-    
+    @Json(name = "strYoutube") val strYoutube: String?,
+
     // Ingredients
     val strIngredient1: String?, val strIngredient2: String?, val strIngredient3: String?, val strIngredient4: String?,
     val strIngredient5: String?, val strIngredient6: String?, val strIngredient7: String?, val strIngredient8: String?,

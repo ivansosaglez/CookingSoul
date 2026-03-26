@@ -4,6 +4,7 @@ import com.ivansosa.recetingapp.domain.model.MealSummary
 import com.ivansosa.recetingapp.domain.usecase.GetCategoriesUseCase
 import com.ivansosa.recetingapp.domain.usecase.GetMealDetailUseCase
 import com.ivansosa.recetingapp.domain.usecase.SearchMealsUseCase
+import com.ivansosa.recetingapp.domain.usecase.ToggleFavoriteUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -23,6 +24,7 @@ class HomeViewModelTest {
     private val searchMealsUseCase = mock(SearchMealsUseCase::class.java)
     private val getCategoriesUseCase = mock(GetCategoriesUseCase::class.java)
     private val getMealDetailUseCase = mock(GetMealDetailUseCase::class.java)
+    private val toggleFavoriteUseCase = mock(ToggleFavoriteUseCase::class.java)
 
     private lateinit var viewModel: HomeViewModel
 
@@ -34,7 +36,7 @@ class HomeViewModelTest {
         `when`(searchMealsUseCase(query)).thenReturn(results)
         
         // Init ViewModel (will trigger loadCategories too, but we ignore that for now)
-        viewModel = HomeViewModel(searchMealsUseCase, getCategoriesUseCase, getMealDetailUseCase)
+        viewModel = HomeViewModel(searchMealsUseCase, getCategoriesUseCase, getMealDetailUseCase, toggleFavoriteUseCase)
 
         // Act
         viewModel.searchMeals(query)
@@ -51,7 +53,7 @@ class HomeViewModelTest {
         val query = "Unknown"
         `when`(searchMealsUseCase(query)).thenReturn(emptyList())
         
-        viewModel = HomeViewModel(searchMealsUseCase, getCategoriesUseCase, getMealDetailUseCase)
+        viewModel = HomeViewModel(searchMealsUseCase, getCategoriesUseCase, getMealDetailUseCase, toggleFavoriteUseCase)
 
         // Act
         viewModel.searchMeals(query)

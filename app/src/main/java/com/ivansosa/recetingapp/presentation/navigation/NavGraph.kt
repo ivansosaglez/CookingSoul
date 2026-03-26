@@ -11,6 +11,7 @@ import com.ivansosa.recetingapp.presentation.screens.CategoryMealsScreen
 import com.ivansosa.recetingapp.presentation.screens.FavoritesScreen
 import com.ivansosa.recetingapp.presentation.screens.HomeScreen
 import com.ivansosa.recetingapp.presentation.screens.MealDetailScreen
+import com.ivansosa.recetingapp.presentation.screens.SplashScreen
 
 @Composable
 fun NavGraph() {
@@ -18,8 +19,16 @@ fun NavGraph() {
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Home.route
+        startDestination = Screen.Splash.route
     ) {
+        composable(route = Screen.Splash.route) {
+            SplashScreen(onSplashComplete = {
+                navController.navigate(Screen.Home.route) {
+                    popUpTo(Screen.Splash.route) { inclusive = true }
+                }
+            })
+        }
+
         composable(route = Screen.Home.route) {
             HomeScreen(
                 onNavigateToCategory = { categoryName ->
@@ -74,6 +83,9 @@ fun NavGraph() {
                 onNavigateUp = { navController.navigateUp() },
                 onNavigateToDetail = { mealId ->
                     navController.navigate(Screen.MealDetail.createRoute(mealId))
+                },
+                onNavigateToCategories = {
+                    navController.navigate(Screen.CategoriesList.route)
                 }
             )
         }
