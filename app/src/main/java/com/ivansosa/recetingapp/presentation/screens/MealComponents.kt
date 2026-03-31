@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.ivansosa.recetingapp.domain.model.MealSummary
-import com.ivansosa.recetingapp.ui.theme.RecetingAppTheme
+import com.ivansosa.recetingapp.ui.theme.CookingSoulTheme
 
 @Composable
 fun RecipeGridCard(
@@ -260,7 +260,7 @@ fun RecipeGridCardPreview() {
         isFavorite = false
     )
 
-    RecetingAppTheme {
+    CookingSoulTheme {
         Column(modifier = Modifier.padding(16.dp)) {
             RecipeGridCard(
                 meal = mockMeal,

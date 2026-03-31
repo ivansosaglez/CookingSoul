@@ -10,14 +10,14 @@ import androidx.compose.ui.Modifier
 import com.ivansosa.recetingapp.presentation.navigation.NavGraph
 import dagger.hilt.android.AndroidEntryPoint
 
-import com.ivansosa.recetingapp.ui.theme.RecetingAppTheme
+import com.ivansosa.recetingapp.ui.theme.CookingSoulTheme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            RecetingAppTheme {
+            CookingSoulTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background

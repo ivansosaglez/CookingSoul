@@ -33,7 +33,7 @@ private val DarkColorScheme = lightColorScheme( // Forcing light theme structure
 )
 
 @Composable
-fun RecetingAppTheme(
+fun CookingSoulTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,

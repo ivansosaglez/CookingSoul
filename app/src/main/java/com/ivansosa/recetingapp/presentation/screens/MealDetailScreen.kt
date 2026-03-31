@@ -42,7 +42,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.ivansosa.recetingapp.domain.model.MealDetail
-import com.ivansosa.recetingapp.presentation.components.AdBannerView
 import com.ivansosa.recetingapp.presentation.viewmodel.MealDetailViewModel
 import com.ivansosa.recetingapp.presentation.viewmodel.UiState
 
@@ -77,7 +76,7 @@ fun MealDetailScreen(
                                     if (!detail.youtubeUrl.isNullOrBlank()) {
                                         append("▶️ Watch on YouTube: ${detail.youtubeUrl}\n\n")
                                     }
-                                    append("Found on Receting App!")
+                                    append("Found on CookingSoul!")
                                 }
                                 putExtra(Intent.EXTRA_TEXT, shareText)
                             }
@@ -146,11 +145,6 @@ fun MealDetailContent(meal: MealDetail) {
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.secondary
                 )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                // Ad Banner
-                AdBannerView()
 
                 Spacer(modifier = Modifier.height(16.dp))
 

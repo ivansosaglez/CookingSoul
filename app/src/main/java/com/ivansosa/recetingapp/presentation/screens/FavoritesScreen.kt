@@ -28,7 +28,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.ivansosa.recetingapp.presentation.components.AdBannerView
 import com.ivansosa.recetingapp.presentation.components.BottomNavigationBar
 import com.ivansosa.recetingapp.presentation.navigation.Screen
 import com.ivansosa.recetingapp.presentation.viewmodel.FavoritesViewModel
@@ -92,8 +91,6 @@ fun FavoritesScreen(
             )
             
             Spacer(modifier = Modifier.height(8.dp))
-
-            AdBannerView()
 
             Spacer(modifier = Modifier.height(16.dp))
             

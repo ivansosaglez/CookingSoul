@@ -44,7 +44,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.ivansosa.recetingapp.domain.model.MealCategory
-import com.ivansosa.recetingapp.presentation.components.AdBannerView
 import com.ivansosa.recetingapp.presentation.viewmodel.HomeViewModel
 import com.ivansosa.recetingapp.presentation.viewmodel.UiState
 
@@ -75,8 +74,6 @@ fun CategoriesScreen(
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
-            AdBannerView()
-
             when (val state = categoriesState) {
                 is UiState.Loading -> LoadingView() // Reuse LoadingView
                 is UiState.Error -> ErrorView(state.message) // Reuse ErrorView

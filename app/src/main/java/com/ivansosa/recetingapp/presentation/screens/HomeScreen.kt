@@ -52,7 +52,6 @@ import com.ivansosa.recetingapp.R
 import com.ivansosa.recetingapp.domain.model.MealCategory
 import com.ivansosa.recetingapp.domain.model.MealSummary
 import com.ivansosa.recetingapp.domain.model.MealDetail
-import com.ivansosa.recetingapp.presentation.components.AdBannerView
 import com.ivansosa.recetingapp.presentation.components.BottomNavigationBar
 import com.ivansosa.recetingapp.presentation.components.CustomSearchBar
 import com.ivansosa.recetingapp.presentation.components.SectionHeader
@@ -167,11 +166,6 @@ fun HomeScreenContent(
                 query = query,
                 onQueryChange = onQueryChange
             )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Ad Banner
-            AdBannerView()
 
             Spacer(modifier = Modifier.height(12.dp))
             
@@ -303,7 +297,7 @@ fun HomeScreenPreview() {
         MealSummary("3", "Pancakes", "https://www.themealdb.com/images/media/meals/rwuyqx1511383174.jpg")
     )
 
-    com.ivansosa.recetingapp.ui.theme.RecetingAppTheme {
+    com.ivansosa.recetingapp.ui.theme.CookingSoulTheme {
         HomeScreenContent(
             searchState = UiState.Empty,
             categoriesState = UiState.Success(mockCategories),

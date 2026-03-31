@@ -21,8 +21,6 @@ coroutines = "1.8.0"
 turbine = "1.1.0"
 mockito = "5.11.0"
 mockitoKotlin = "5.2.1"
-admob = "23.0.0"
-
 hiltNavigationCompose = "1.2.0"
 
 [libraries]
@@ -70,7 +68,6 @@ kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
 mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockitoKotlin" }
-admob = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "admob" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
