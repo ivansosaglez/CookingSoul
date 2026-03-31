@@ -296,11 +296,9 @@ Current test coverage is minimal. The following areas have test coverage:
 
 ## Contributing
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/your-feature`
-3. Commit your changes: `git commit -m "feat: add your feature"`
-4. Push to the branch: `git push origin feature/your-feature`
-5. Open a Pull Request
+Contributions are welcome! You can help by reporting bugs, suggesting features, or submitting pull requests.
+
+See [CONTRIBUTING.md](.github/CONTRIBUTING.md) for full guidelines.
 
 ---
 
