@@ -23,7 +23,15 @@
 
 ## Screenshots
 
-> Add screenshots here once the app is running on a device.
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/f5906f7e-ecdf-447d-9de4-a70e9b1e2414" width="180" alt="image_01" />
+  <img src="https://github.com/user-attachments/assets/64fa0d75-801b-4fe5-ac33-e35bb8210445" width="180" alt="image_02" />
+  <img src="https://github.com/user-attachments/assets/b69857b5-7293-458a-99b4-1d58d8490d87" width="180" alt="image_03" />
+  <img src="https://github.com/user-attachments/assets/44d4ec4e-c4eb-4f5f-93fa-f5fef0e1c9a6" width="180" alt="image_04" />
+  <img src="https://github.com/user-attachments/assets/7e7ef09e-4eef-4ae5-bcb8-47d4277e1315" width="180" alt="image_05" />
+</p>
+
+
 
 ---
 
